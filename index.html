@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta charset="euc-kr">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRC Calculator</title>
+    <script>
+        function splitHexIntoPairs(hexString) {
+            // 띄어쓰기를 제거하고 16진수를 2자리씩 끊어서 배열로 만듭니다.
+			console.log(hexString);
+            let cleanHexString = hexString.replace(/\s/g, '');
+            let pairs = [];
+            for (let i = 0; i < cleanHexString.length; i += 2) {
+                pairs.push(cleanHexString.slice(i, i + 2));
+            }
+            return pairs;
+        }
+	
+        function convertAndDisplayHex() {
+            // input 요소에서 값을 가져옴
+            let inputText = document.getElementById('inputText').value;
+           
+            // 2자리씩 끊어서 배열로 변환
+            let pairs = splitHexIntoPairs(inputText);
+			console.log(pairs.length);
+			
+			let isValid = true;
+			 // 입력값이 16진수인지 확인
+			for (let i = 0; i < pairs.length; i++) {
+				let isHex = /^[0-9A-Fa-f]+$/g.test(pairs[i]);
+				// 16진수가 아니면 경고 메시지를 표시하고 함수 종료
+				if (!isHex) {
+					isValid = false;
+				}
+			}
+			
+			
+			if(isValid)
+			{
+				let crc = calculateCRC16Modbus(pairs);
+				// 결과를 화면에 표시
+                document.getElementById('result').innerText = pairs.join(' ') +' '+ crc;
+				document.getElementById('inputText').value=''
+				document.getElementById('isCopy').innerText=''
+			} else {
+				document.getElementById('result').innerText ="올바른 16진수를 입력하세요.";
+				document.getElementById('inputText').value=''
+				document.getElementById('isCopy').innerText=''
+
+			}
+        }
+		
+		   // CRC-16/MODBUS 계산 함수
+        function calculateCRC16Modbus(data) {
+            const polynomial = 0xA001;
+            let crc = 0xFFFF;
+
+            for (let i = 0; i < data.length; i++) {
+                crc ^= parseInt(data[i], 16);
+                for (let j = 0; j < 8; j++) {
+                    if ((crc & 1) !== 0) {
+                        crc = (crc >> 1) ^ polynomial;
+                    } else {
+                        crc >>= 1;
+                    }
+                }
+            }
+
+            // 결과를 16진수 문자열로 반환
+            let crcString =  crc.toString(16).toUpperCase();
+			let paddedCRC = crcString.padStart(4, '0'); // 4자리로 패딩
+			let crcPairs = [];
+			for (let i = 0; i < paddedCRC.length; i += 2) {
+				crcPairs.push(paddedCRC.slice(i, i + 2));
+			}
+			let littleEndianCRC = crcPairs.reverse().join(' ');
+			return littleEndianCRC;
+        }
+		
+		// Enter 키 입력 감지
+        function handleEnterKey(event) {
+            if (event.key === 'Enter') {
+                convertAndDisplayHex();
+            }
+		   if (event.key === 'Tab') {
+				event.preventDefault(); // 기본 동작을 막음
+                document.getElementById('result').focus(); // 결과 텍스트로 포커스 이동
+            }
+        }
+		 // 컨트롤 + C 키 입력 감지
+        function handleCtrlCKey(event) {
+            if ((event.ctrlKey || event.metaKey) && event.key === 'c') {
+                event.preventDefault(); // 기본 동작을 막음
+                copyResultToClipboard();
+            }
+			if (event.shiftKey && event.key === 'Tab') {
+				event.preventDefault();
+				document.getElementById('inputText').focus();
+			}
+
+        }
+		// 결과를 클립보드로 복사
+        function copyResultToClipboard() {
+            let resultText = document.getElementById('result').innerText;
+            navigator.clipboard.writeText(resultText)
+                .then(() => {
+                    console.log('복사 완료');
+					document.getElementById('isCopy').innerText='(복사됨)'
+					
+                })
+                .catch((error) => {
+                    console.error('복사 실패:', error);
+					document.getElementById('isCopy').innerText='(복사실패)'
+                });
+        }
+    </script>
+</head>
+<body>
+    <label for="inputText">16진수로 입력:</label>
+    <input type="text" id="inputText" onkeydown="handleEnterKey(event)" autofocus>
+    <button onclick="convertAndDisplayHex()">변환</button>
+	<div style="display: flex;">
+		<div style="margin-right: 5px;" id="result" tabindex="0" onkeydown="handleCtrlCKey(event)"></div>
+		<div id="isCopy"></div>
+	</div>
+	<label for="inputText">예제	:1F 10 FF81 0001 02 0015 ->  1F 10 FF81 0001 02 0015 F7 21
+</label>
+
+</body>
+</html>
