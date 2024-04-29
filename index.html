@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="kr">
 <head>
-    <meta charset="euc-kr">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRC Calculator</title>
     <script>
         function splitHexIntoPairs(hexString) {
-            // ¶ç¾î¾²±â¸¦ Á¦°ÅÇÏ°í 16Áø¼ö¸¦ 2ÀÚ¸®¾¿ ²÷¾î¼­ ¹è¿­·Î ¸¸µì´Ï´Ù.
+            // ë„ì–´ì“°ê¸°ë¥¼ ì œê±°í•˜ê³  16ì§„ìˆ˜ë¥¼ 2ìë¦¬ì”© ëŠì–´ì„œ ë°°ì—´ë¡œ ë§Œë“­ë‹ˆë‹¤.
 			console.log(hexString);
             let cleanHexString = hexString.replace(/\s/g, '');
             let pairs = [];
@@ -17,18 +17,18 @@
         }
 	
         function convertAndDisplayHex() {
-            // input ¿ä¼Ò¿¡¼­ °ªÀ» °¡Á®¿È
+            // input ìš”ì†Œì—ì„œ ê°’ì„ ê°€ì ¸ì˜´
             let inputText = document.getElementById('inputText').value;
            
-            // 2ÀÚ¸®¾¿ ²÷¾î¼­ ¹è¿­·Î º¯È¯
+            // 2ìë¦¬ì”© ëŠì–´ì„œ ë°°ì—´ë¡œ ë³€í™˜
             let pairs = splitHexIntoPairs(inputText);
 			console.log(pairs.length);
 			
 			let isValid = true;
-			 // ÀÔ·Â°ªÀÌ 16Áø¼öÀÎÁö È®ÀÎ
+			 // ì…ë ¥ê°’ì´ 16ì§„ìˆ˜ì¸ì§€ í™•ì¸
 			for (let i = 0; i < pairs.length; i++) {
 				let isHex = /^[0-9A-Fa-f]+$/g.test(pairs[i]);
-				// 16Áø¼ö°¡ ¾Æ´Ï¸é °æ°í ¸Ş½ÃÁö¸¦ Ç¥½ÃÇÏ°í ÇÔ¼ö Á¾·á
+				// 16ì§„ìˆ˜ê°€ ì•„ë‹ˆë©´ ê²½ê³  ë©”ì‹œì§€ë¥¼ í‘œì‹œí•˜ê³  í•¨ìˆ˜ ì¢…ë£Œ
 				if (!isHex) {
 					isValid = false;
 				}
@@ -38,19 +38,19 @@
 			if(isValid)
 			{
 				let crc = calculateCRC16Modbus(pairs);
-				// °á°ú¸¦ È­¸é¿¡ Ç¥½Ã
+				// ê²°ê³¼ë¥¼ í™”ë©´ì— í‘œì‹œ
                 document.getElementById('result').innerText = pairs.join(' ') +' '+ crc;
 				document.getElementById('inputText').value=''
 				document.getElementById('isCopy').innerText=''
 			} else {
-				document.getElementById('result').innerText ="¿Ã¹Ù¸¥ 16Áø¼ö¸¦ ÀÔ·ÂÇÏ¼¼¿ä.";
+				document.getElementById('result').innerText ="ì˜¬ë°”ë¥¸ 16ì§„ìˆ˜ë¥¼ ì…ë ¥í•˜ì„¸ìš”.";
 				document.getElementById('inputText').value=''
 				document.getElementById('isCopy').innerText=''
 
 			}
         }
 		
-		   // CRC-16/MODBUS °è»ê ÇÔ¼ö
+		   // CRC-16/MODBUS ê³„ì‚° í•¨ìˆ˜
         function calculateCRC16Modbus(data) {
             const polynomial = 0xA001;
             let crc = 0xFFFF;
@@ -66,9 +66,9 @@
                 }
             }
 
-            // °á°ú¸¦ 16Áø¼ö ¹®ÀÚ¿­·Î ¹İÈ¯
+            // ê²°ê³¼ë¥¼ 16ì§„ìˆ˜ ë¬¸ìì—´ë¡œ ë°˜í™˜
             let crcString =  crc.toString(16).toUpperCase();
-			let paddedCRC = crcString.padStart(4, '0'); // 4ÀÚ¸®·Î ÆĞµù
+			let paddedCRC = crcString.padStart(4, '0'); // 4ìë¦¬ë¡œ íŒ¨ë”©
 			let crcPairs = [];
 			for (let i = 0; i < paddedCRC.length; i += 2) {
 				crcPairs.push(paddedCRC.slice(i, i + 2));
@@ -77,20 +77,20 @@
 			return littleEndianCRC;
         }
 		
-		// Enter Å° ÀÔ·Â °¨Áö
+		// Enter í‚¤ ì…ë ¥ ê°ì§€
         function handleEnterKey(event) {
             if (event.key === 'Enter') {
                 convertAndDisplayHex();
             }
 		   if (event.key === 'Tab') {
-				event.preventDefault(); // ±âº» µ¿ÀÛÀ» ¸·À½
-                document.getElementById('result').focus(); // °á°ú ÅØ½ºÆ®·Î Æ÷Ä¿½º ÀÌµ¿
+				event.preventDefault(); // ê¸°ë³¸ ë™ì‘ì„ ë§‰ìŒ
+                document.getElementById('result').focus(); // ê²°ê³¼ í…ìŠ¤íŠ¸ë¡œ í¬ì»¤ìŠ¤ ì´ë™
             }
         }
-		 // ÄÁÆ®·Ñ + C Å° ÀÔ·Â °¨Áö
+		 // ì»¨íŠ¸ë¡¤ + C í‚¤ ì…ë ¥ ê°ì§€
         function handleCtrlCKey(event) {
             if ((event.ctrlKey || event.metaKey) && event.key === 'c') {
-                event.preventDefault(); // ±âº» µ¿ÀÛÀ» ¸·À½
+                event.preventDefault(); // ê¸°ë³¸ ë™ì‘ì„ ë§‰ìŒ
                 copyResultToClipboard();
             }
 			if (event.shiftKey && event.key === 'Tab') {
@@ -99,31 +99,31 @@
 			}
 
         }
-		// °á°ú¸¦ Å¬¸³º¸µå·Î º¹»ç
+		// ê²°ê³¼ë¥¼ í´ë¦½ë³´ë“œë¡œ ë³µì‚¬
         function copyResultToClipboard() {
             let resultText = document.getElementById('result').innerText;
             navigator.clipboard.writeText(resultText)
                 .then(() => {
-                    console.log('º¹»ç ¿Ï·á');
-					document.getElementById('isCopy').innerText='(º¹»çµÊ)'
+                    console.log('ë³µì‚¬ ì™„ë£Œ');
+					document.getElementById('isCopy').innerText='(ë³µì‚¬ë¨)'
 					
                 })
                 .catch((error) => {
-                    console.error('º¹»ç ½ÇÆĞ:', error);
-					document.getElementById('isCopy').innerText='(º¹»ç½ÇÆĞ)'
+                    console.error('ë³µì‚¬ ì‹¤íŒ¨:', error);
+					document.getElementById('isCopy').innerText='(ë³µì‚¬ì‹¤íŒ¨)'
                 });
         }
     </script>
 </head>
 <body>
-    <label for="inputText">16Áø¼ö·Î ÀÔ·Â:</label>
+    <label for="inputText">16ì§„ìˆ˜ë¡œ ì…ë ¥:</label>
     <input type="text" id="inputText" onkeydown="handleEnterKey(event)" autofocus>
-    <button onclick="convertAndDisplayHex()">º¯È¯</button>
+    <button onclick="convertAndDisplayHex()">ë³€í™˜</button>
 	<div style="display: flex;">
 		<div style="margin-right: 5px;" id="result" tabindex="0" onkeydown="handleCtrlCKey(event)"></div>
 		<div id="isCopy"></div>
 	</div>
-	<label for="inputText">¿¹Á¦	:1F 10 FF81 0001 02 0015 ->  1F 10 FF81 0001 02 0015 F7 21
+	<label for="inputText">ì˜ˆì œ	:1F 10 FF81 0001 02 0015 ->  1F 10 FF81 0001 02 0015 F7 21
 </label>
 
 </body>
