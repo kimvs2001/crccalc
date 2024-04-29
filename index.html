@@ -89,14 +89,14 @@
         }
 		 // 컨트롤 + C 키 입력 감지
         function handleCtrlCKey(event) {
-            if ((event.ctrlKey || event.metaKey) && event.key === 'c') {
-                event.preventDefault(); // 기본 동작을 막음
-                copyResultToClipboard();
-            }
-			if (event.shiftKey && event.key === 'Tab') {
-				event.preventDefault();
-				document.getElementById('inputText').focus();
-			}
+   //          if ((event.ctrlKey || event.metaKey) && event.key === 'c') {
+   //              event.preventDefault(); // 기본 동작을 막음
+   //              copyResultToClipboard();
+   //          }
+			// if (event.shiftKey && event.key === 'Tab') {
+			// 	event.preventDefault();
+			// 	document.getElementById('inputText').focus();
+			// }
 
         }
 		// 결과를 클립보드로 복사
